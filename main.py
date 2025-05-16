@@ -1,17 +1,16 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, sum as _sum
+from pyspark.sql.functions import round
 
-# Initialize Spark
+
 spark = SparkSession.builder \
     .appName("PySpark Homework 3") \
     .getOrCreate()
 
 print("✅ SparkSession initialized")
 
-# Path to CSV files
 DATA_PATH = "data/"
 
-# Load CSV files
 users_df = spark.read.csv(DATA_PATH + "users.csv", header=True, inferSchema=True)
 purchases_df = spark.read.csv(DATA_PATH + "purchases.csv", header=True, inferSchema=True)
 products_df = spark.read.csv(DATA_PATH + "products.csv", header=True, inferSchema=True)
@@ -88,3 +87,19 @@ young_total_by_category = young_total_by_category.orderBy(col("total_spent").des
 
 print("📊 Spending by category (age 18–25):")
 young_total_by_category.show()
+
+# STEP 5: Percentage share of spending by category (age 18–25)
+
+# Get total sum across all categories for age 18–25
+total_spent_all = young_total_by_category.agg(
+    _sum("total_spent").alias("total_all")
+).collect()[0]["total_all"]
+
+# Add percentage column to each category
+young_share_by_category = young_total_by_category.withColumn(
+    "percentage",
+    round((col("total_spent") / total_spent_all) * 100, 2)
+)
+
+print("📊 Percentage share by category (age 18–25):")
+young_share_by_category.show()
