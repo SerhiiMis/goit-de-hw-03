@@ -62,3 +62,29 @@ total_by_category = total_by_category.orderBy(col("total_spent").desc())
 
 print("📊 Total spending by product category:")
 total_by_category.show()
+
+# STEP 4: Spending by category for users aged 18–25
+# Filter users in age group 18–25
+young_users = users_df.filter((col("age") >= 18) & (col("age") <= 25))
+
+# Join users with purchases
+young_purchases = young_users.join(purchases_df, on="user_id")
+
+# Join with products
+young_purchases_with_products = young_purchases.join(products_df, on="product_id")
+
+# Calculate total per purchase
+young_purchases_with_total = young_purchases_with_products.withColumn(
+    "total", col("quantity") * col("price")
+)
+
+# Group by category and sum totals
+young_total_by_category = young_purchases_with_total.groupBy("category").agg(
+    _sum("total").alias("total_spent")
+)
+
+# Sort by total spent descending
+young_total_by_category = young_total_by_category.orderBy(col("total_spent").desc())
+
+print("📊 Spending by category (age 18–25):")
+young_total_by_category.show()
