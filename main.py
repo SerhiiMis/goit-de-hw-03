@@ -103,3 +103,9 @@ young_share_by_category = young_total_by_category.withColumn(
 
 print("📊 Percentage share by category (age 18–25):")
 young_share_by_category.show()
+
+# STEP 6: Top 3 categories by percentage (age 18–25)
+top3_categories = young_share_by_category.limit(3)
+
+print("🥇 Top 3 categories by percentage (age 18–25):")
+top3_categories.show()
