@@ -24,3 +24,21 @@ purchases_df.show()
 
 print("📦 PRODUCTS")
 products_df.show()
+
+# 🔍 КРОК 2: Видалення пропущених значень
+users_df = users_df.dropna()
+purchases_df = purchases_df.dropna()
+products_df = products_df.dropna()
+
+print("✅ Пропущені значення видалено")
+
+# Перевірка очищених даних
+print("🧑 USERS (cleaned)")
+users_df.show()
+
+print("🛒 PURCHASES (cleaned)")
+purchases_df.show()
+
+print("📦 PRODUCTS (cleaned)")
+products_df.show()
+
